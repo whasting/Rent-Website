@@ -37,11 +37,33 @@ router.get('/', (req, res) => {
     res.status(200).send(renderFullPage(html, finalState));
 });
 
+router.get('/login', (req, res) => {
+    const context = {};
+    const store = createStore(reducers);
 
-/*
- In this function, you can render you html part of the webpage. You can add some meta tags or Opern Graph tags
- using JS variables.
- */
+    store.dispatch({
+        type: ADD_ITEM,
+        payload: {
+            name: 'Components',
+            description: 'Description for components'
+        }
+    });
+
+    const finalState = store.getState();
+    const html = ReactDOMServer.renderToString(
+        <Provider store={store}>
+            <StaticRouter
+                location={req.url}
+                context={context}
+            >
+                <App/>
+            </StaticRouter>
+        </Provider>
+    );
+
+    res.status(200).send(renderFullPage(html, finalState));
+});
+
 function renderFullPage(html, initialState) {
     return `
     <!DOCTYPE html>
