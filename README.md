@@ -1,5 +1,9 @@
 ## Rent Website
 
+Hooray for rent automation! Rent Website is a full-stack application written purely in JavaScript using React/Redux for the frontend and Node.js for the backend.
+
+This project draws inspiration from a website written by friend and housemate Alex Rowe in 2014. We lived in a house with 14 people and rent/utilities was a chore.
+
 ### MVPs
     1. User Authentication
     2. Hosted on AWS
@@ -11,3 +15,17 @@
 #### Bonus
     1. Integrate with Paypal API for Autopayment
     2. Facebook messenger integration
+
+### Group Members
+    John Kang
+
+    Wade Hastings
+
+### Group Tasks
+
+### Timeline
+ - [ ] Phase 1: Setup Skeleton and User Auth
+ - [ ] Phase 2: Initial User Interface and Picture Upload
+ - [ ] Phase 3: Rent and Utilities calculator logic and interface
+ - [ ] Phase 4: Comment System
+ - [ ] Phase 5: SMS Alerts via Twilio API
