@@ -1,12 +1,17 @@
 const webpack = require('webpack');
+const path = require('path');
 var nodeExternals = require('webpack-node-externals');
 
 module.exports = [
     {
+    context: __dirname,
     entry: './server.js',
     output: {
-        path: './',
+        path: path.resolve(__dirname, './'),
         filename: 'server.bundle.js',
+    },
+    resolve: {
+    extensions: ['.js', '.jsx', '*']
     },
     module: {
         loaders: [{
@@ -33,9 +38,10 @@ module.exports = [
     // ]
     },
     {
+        context: __dirname,
         entry: './views/index.js',
         output: {
-            path: './bin',
+            path: path.resolve(__dirname, './bin'),
             filename: 'app.bundle.js',
         },
         module: {
@@ -60,4 +66,4 @@ module.exports = [
         //     }),
         // ]
     }
-]
+];
