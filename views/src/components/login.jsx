@@ -4,7 +4,7 @@ class Login extends Component {
     render() {
         return (
             <div className="col-md-10 col-md-offset-1 main">
-                <form name="login" action="index_submit" method="get">
+                <form name="login" action="/login" method="post">
                     <ul>
                         <li><label>Email</label>
                             <input type="email" name="usermail" placeholder="yourname@email.com" required/></li>

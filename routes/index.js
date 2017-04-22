@@ -6,6 +6,7 @@ import reducers from '../views/src/reducers/index';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { ADD_ITEM } from '../views/src/actions/list_actions';
+import passport from 'passport';
 import App from './app';
 
 let router = express.Router();
@@ -36,6 +37,18 @@ router.get('/', (req, res) => {
 
     res.status(200).send(renderFullPage(html, finalState));
 });
+
+router.post('/login',
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login',
+    }),
+    function(req, res) {
+        // If this function gets called, authentication was successful.
+        // `req.user` contains the authenticated user.
+        res.redirect('/users/' + req.user.username);
+    });
+
 
 router.get('/login', (req, res) => {
     const context = {};
