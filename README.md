@@ -23,6 +23,13 @@ This project draws inspiration from a website written by friend and housemate Al
 
 ### Group Tasks
 
+###### John Kang
+  - Initial backend setup
+
+###### Wade Hastings
+  - README
+  - Initial frontend setup
+
 ### Timeline
  - [ ] Phase 1: Setup Skeleton and User Auth
  - [ ] Phase 2: Initial User Interface and Picture Upload
