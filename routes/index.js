@@ -1,78 +1,49 @@
 import express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { match, RouterContext } from 'react-router';
-import routes from '../views/src/routes';
+import { StaticRouter } from 'react-router-dom';
+import App from '../views/src/appRoutes';
 import reducers from '../views/src/reducers/index';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { ADD_ITEM } from '../views/src/actions/list_actions';
-
 let router = express.Router();
 
 router.get('/', (req, res) => {
-    /*
-    Here we are first matching if the current url exists in the react router routes
-     */
-	match({ routes, location: req.originalUrl }, (error, redirectLocation, renderProps) => {
-		if (error) {
-			res.status(500).send(error.message)
-		} else if (redirectLocation) {
-			res.redirect(302, redirectLocation.pathname + redirectLocation.search)
-		} else if (renderProps) {
+    const context = {};
+    const store = createStore(reducers);
 
-		    /*
-             http://redux.js.org/docs/recipes/ServerRendering.html
-		     */
-			const store = createStore(reducers);
+    store.dispatch({
+        type: ADD_ITEM,
+        payload: {
+            name: 'Components',
+            description: 'Description for components'
+        }
+    });
 
-			const html = ReactDOMServer.renderToString(
-				<Provider store={store}>
-					<RouterContext {...renderProps} />
-				</Provider>
-			);
+    const finalState = store.getState();
+    const html = ReactDOMServer.renderToString(
+        <Provider store={store}>
+            <StaticRouter
+                location={req.url}
+                context={context}
+            >
+                <App/>
+            </StaticRouter>
+        </Provider>
+    );
 
-			/*
-			We can dispatch actions from server side as well. This can be very useful if you want
-			to inject some initial data into the app. For example, if you have some articles that
-			you have fetched from database and you want to load immediately after the user has loaded
-			the webpage, you can do so in here.
-
-			Here we are inject an list item into our app. Normally once the user has loaded the webpage
-			we would make a request to the server and get the latest item list. But in the server we have
-			instant connection to a database (for example, if you have a mongoDB or MySQL database installed
-			in the server which contains all you items). So you can quickly fetch and inject it into the webpage.
-
-			This will help SEO as well. If you load the webpage and make a request to the server to get all the
-			latest items/articles, by the time Google Search Engine may not see all the updated items/articles.
-
-			But if you inject the latest items/articles before it reaches the user, the Search Engine will see the
-			item/article immediately.
-			 */
-			store.dispatch({
-			    type: ADD_ITEM,
-                payload: {
-			        name: 'Components',
-                    description: 'Description for components'
-                }
-            });
-
-			const finalState = store.getState();
-
-			res.status(200).send(renderFullPage(html, finalState));
-		} else {
-			res.status(404).send('Not found')
-		}
-	})
+    res.status(200).send(renderFullPage(html, finalState));
 });
 
 
 /*
-In this function, you can render you html part of the webpage. You can add some meta tags or Opern Graph tags
-using JS variables.
+ In this function, you can render you html part of the webpage. You can add some meta tags or Opern Graph tags
+ using JS variables.
  */
 function renderFullPage(html, initialState) {
-	return `
+    console.log("LOLOL");
+    return `
     <!DOCTYPE html>
     <html lang="en">
     <head>

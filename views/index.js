@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import {
+    BrowserRouter as Router,
+} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { Router, browserHistory } from 'react-router';
 import reducers from './src/reducers/index';
-import routes from './src/routes';
+import App from './src/appRoutes';
 
 
 /*
@@ -17,7 +19,9 @@ While creating a store, we will inject the initial state we received from the se
  */
 ReactDOM.render(
     <Provider store={createStore(reducers, initialState)}>
-        <Router history={ browserHistory } routes={ routes } />
+        <Router>
+            <App/>
+        </Router>
     </Provider>,
     document.getElementById("reactbody")
 );

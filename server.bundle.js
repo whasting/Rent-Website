@@ -120,19 +120,19 @@ module.exports = require("react-redux");
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-router");
+module.exports = require("redux");
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("redux");
+module.exports = require("express");
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("react-router-dom");
 
 /***/ }),
 /* 6 */
@@ -142,10 +142,10 @@ module.exports = require("express");
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
-var _express = __webpack_require__(5);
+var _express = __webpack_require__(4);
 
 var _express2 = _interopRequireDefault(_express);
 
@@ -153,21 +153,21 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(16);
+var _server = __webpack_require__(15);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouter = __webpack_require__(3);
+var _reactRouterDom = __webpack_require__(5);
 
-var _routes = __webpack_require__(15);
+var _appRoutes = __webpack_require__(26);
 
-var _routes2 = _interopRequireDefault(_routes);
+var _appRoutes2 = _interopRequireDefault(_appRoutes);
 
-var _index = __webpack_require__(13);
+var _index = __webpack_require__(12);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _redux = __webpack_require__(4);
+var _redux = __webpack_require__(3);
 
 var _reactRedux = __webpack_require__(2);
 
@@ -178,64 +178,41 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var router = _express2.default.Router();
 
 router.get('/', function (req, res) {
-	/*
- Here we are first matching if the current url exists in the react router routes
-  */
-	(0, _reactRouter.match)({ routes: _routes2.default, location: req.originalUrl }, function (error, redirectLocation, renderProps) {
-		if (error) {
-			res.status(500).send(error.message);
-		} else if (redirectLocation) {
-			res.redirect(302, redirectLocation.pathname + redirectLocation.search);
-		} else if (renderProps) {
+    var context = {};
+    var store = (0, _redux.createStore)(_index2.default);
 
-			/*
-          http://redux.js.org/docs/recipes/ServerRendering.html
-    */
-			var store = (0, _redux.createStore)(_index2.default);
+    store.dispatch({
+        type: _list_actions.ADD_ITEM,
+        payload: {
+            name: 'Components',
+            description: 'Description for components'
+        }
+    });
 
-			var html = _server2.default.renderToString(_react2.default.createElement(
-				_reactRedux.Provider,
-				{ store: store },
-				_react2.default.createElement(_reactRouter.RouterContext, renderProps)
-			));
+    var finalState = store.getState();
+    var html = _server2.default.renderToString(_react2.default.createElement(
+        _reactRedux.Provider,
+        { store: store },
+        _react2.default.createElement(
+            _reactRouterDom.StaticRouter,
+            {
+                location: req.url,
+                context: context
+            },
+            _react2.default.createElement(_appRoutes2.default, null)
+        )
+    ));
 
-			/*
-   We can dispatch actions from server side as well. This can be very useful if you want
-   to inject some initial data into the app. For example, if you have some articles that
-   you have fetched from database and you want to load immediately after the user has loaded
-   the webpage, you can do so in here.
-   	Here we are inject an list item into our app. Normally once the user has loaded the webpage
-   we would make a request to the server and get the latest item list. But in the server we have
-   instant connection to a database (for example, if you have a mongoDB or MySQL database installed
-   in the server which contains all you items). So you can quickly fetch and inject it into the webpage.
-   	This will help SEO as well. If you load the webpage and make a request to the server to get all the
-   latest items/articles, by the time Google Search Engine may not see all the updated items/articles.
-   	But if you inject the latest items/articles before it reaches the user, the Search Engine will see the
-   item/article immediately.
-    */
-			store.dispatch({
-				type: _list_actions.ADD_ITEM,
-				payload: {
-					name: 'Components',
-					description: 'Description for components'
-				}
-			});
-
-			var finalState = store.getState();
-
-			res.status(200).send(renderFullPage(html, finalState));
-		} else {
-			res.status(404).send('Not found');
-		}
-	});
+    res.status(200).send(renderFullPage(html, finalState));
 });
 
 /*
-In this function, you can render you html part of the webpage. You can add some meta tags or Opern Graph tags
-using JS variables.
+ In this function, you can render you html part of the webpage. You can add some meta tags or Opern Graph tags
+ using JS variables.
  */
 function renderFullPage(html, initialState) {
-	return '\n    <!DOCTYPE html>\n    <html lang="en">\n    <head>\n    \t<!-- Required meta tags always come first -->\n    \t<meta charset="utf-8">\n    \t<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n    \t<meta http-equiv="x-ua-compatible" content="ie=edge">\n    \t<title>React Router Redux Express</title>\n\n    \t<!-- Bootstrap CSS -->\n    \t<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">\n    \t<link rel="stylesheet" href="../stylesheets/main.css">\n    </head>\n    <body>\n\n    \t<div id="reactbody"><div>' + html + '</div></div>\n        <script>\n            window.__INITIAL_STATE__ = ' + JSON.stringify(initialState) + '\n          </script>\n    \t<script src="../bin/app.bundle.js"></script>\n    \t<!-- jQuery first, then Bootstrap JS. -->\n    \t<script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script>\n    \t<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>\n    \t<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>\n    </body>\n    </html>\n    ';
+    console.log("LOLOL");
+    return '\n    <!DOCTYPE html>\n    <html lang="en">\n    <head>\n    \t<!-- Required meta tags always come first -->\n    \t<meta charset="utf-8">\n    \t<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">\n    \t<meta http-equiv="x-ua-compatible" content="ie=edge">\n    \t<title>React Router Redux Express</title>\n\n    \t<!-- Bootstrap CSS -->\n    \t<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">\n    \t<link rel="stylesheet" href="../stylesheets/main.css">\n    </head>\n    <body>\n\n    \t<div id="reactbody"><div>' + html + '</div></div>\n        <script>\n            window.__INITIAL_STATE__ = ' + JSON.stringify(initialState) + '\n          </script>\n    \t<script src="../bin/app.bundle.js"></script>\n    \t<!-- jQuery first, then Bootstrap JS. -->\n    \t<script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script>\n    \t<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>\n    \t<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>\n    </body>\n    </html>\n    ';
 }
 
 exports.default = router;
@@ -247,7 +224,7 @@ exports.default = router;
 "use strict";
 
 
-var _express = __webpack_require__(5);
+var _express = __webpack_require__(4);
 
 var _express2 = _interopRequireDefault(_express);
 
@@ -294,35 +271,63 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Header = function (_Component) {
-    _inherits(Header, _Component);
+var Login = function (_Component) {
+    _inherits(Login, _Component);
 
-    function Header() {
-        _classCallCheck(this, Header);
+    function Login() {
+        _classCallCheck(this, Login);
 
-        return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).apply(this, arguments));
     }
 
-    _createClass(Header, [{
+    _createClass(Login, [{
         key: 'render',
         value: function render() {
+            console.log('lolol');
             return _react2.default.createElement(
                 'div',
-                { style: { marginTop: 20 } },
+                { className: 'col-md-10 col-md-offset-1 main' },
                 _react2.default.createElement(
-                    'h1',
-                    null,
-                    'React Redux Router'
-                ),
-                this.props.children
+                    'form',
+                    { name: 'login', action: 'index_submit', method: 'get', 'accept-charset': 'utf-8' },
+                    _react2.default.createElement(
+                        'ul',
+                        null,
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'label',
+                                { 'for': 'usermail' },
+                                'Email'
+                            ),
+                            _react2.default.createElement('input', { type: 'email', name: 'usermail', placeholder: 'yourname@email.com', required: true })
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'label',
+                                { 'for': 'password' },
+                                'Password'
+                            ),
+                            _react2.default.createElement('input', { type: 'password', name: 'password', placeholder: 'password', required: true })
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement('input', { type: 'submit', value: 'Login' })
+                        )
+                    )
+                )
             );
         }
     }]);
 
-    return Header;
+    return Login;
 }(_react.Component);
 
-exports.default = Header;
+exports.default = Login;
 
 /***/ }),
 /* 9 */
@@ -372,8 +377,11 @@ var Main = function (_Component) {
             return _react2.default.createElement(
                 'div',
                 { className: 'col-md-10 col-md-offset-1 main' },
-                _react2.default.createElement(_list_view2.default, null),
-                _react2.default.createElement(_list_item2.default, null)
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'HELLO'
+                )
             );
         }
     }]);
@@ -402,7 +410,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(2);
 
-var _reactRouter = __webpack_require__(3);
+var _reactRouter = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -510,7 +518,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = __webpack_require__(2);
 
-var _redux = __webpack_require__(4);
+var _redux = __webpack_require__(3);
 
 var _list_actions = __webpack_require__(1);
 
@@ -604,119 +612,12 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRedux = __webpack_require__(2);
-
-var _list_actions = __webpack_require__(1);
-
-var _reactRouter = __webpack_require__(3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ShowListItem = function (_Component) {
-	_inherits(ShowListItem, _Component);
-
-	function ShowListItem() {
-		_classCallCheck(this, ShowListItem);
-
-		return _possibleConstructorReturn(this, (ShowListItem.__proto__ || Object.getPrototypeOf(ShowListItem)).apply(this, arguments));
-	}
-
-	_createClass(ShowListItem, [{
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			this.props.getListItem(this.props.params.name);
-		}
-	}, {
-		key: 'render',
-		value: function render() {
-			var item = this.props.item;
-
-			if (!item) {
-				return _react2.default.createElement(
-					'div',
-					null,
-					'Loading...'
-				);
-			}
-
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					_reactRouter.Link,
-					{ to: "/" },
-					_react2.default.createElement(
-						'button',
-						{ type: 'button', className: 'btn btn-primary', style: { marginTop: 10, marginBottom: 10 } },
-						'Go Back'
-					)
-				),
-				_react2.default.createElement(
-					'h1',
-					null,
-					item.name
-				),
-				_react2.default.createElement(
-					'p',
-					null,
-					item.description
-				)
-			);
-		}
-	}]);
-
-	return ShowListItem;
-}(_react.Component);
-
-/*
- This is a redux specific function.
- What is does is: It gets the state specified in here from the global redux state.
- For example, here we are retrieving the list of items from the redux store.
- Whenever this list changes, any component that is using this list of item will re-render.
- */
-
-
-function mapStateToProps(state) {
-	return {
-		item: state.lists.item
-	};
-}
-
-/*
- Here we are creating a Higher order component
- https://facebook.github.io/react/docs/higher-order-components.html
- */
-exports.default = (0, _reactRedux.connect)(mapStateToProps, { getListItem: _list_actions.getListItem })(ShowListItem);
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _redux = __webpack_require__(4);
+var _redux = __webpack_require__(3);
 
-var _lists = __webpack_require__(14);
+var _lists = __webpack_require__(13);
 
 var _lists2 = _interopRequireDefault(_lists);
 
@@ -729,7 +630,7 @@ var rootReducer = (0, _redux.combineReducers)({
 exports.default = rootReducer;
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -772,7 +673,29 @@ var ListItems = [{ name: 'Actions', description: 'Description for actions' }, { 
 var INITIAL_STATE = { all: ListItems, item: null };
 
 /***/ }),
+/* 14 */,
 /* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-dom/server");
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router");
+
+/***/ }),
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -786,38 +709,54 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = __webpack_require__(3);
-
-var _show_list_item = __webpack_require__(12);
-
-var _show_list_item2 = _interopRequireDefault(_show_list_item);
-
-var _header = __webpack_require__(8);
-
-var _header2 = _interopRequireDefault(_header);
+var _reactRouterDom = __webpack_require__(5);
 
 var _main = __webpack_require__(9);
 
 var _main2 = _interopRequireDefault(_main);
 
+var _login = __webpack_require__(8);
+
+var _login2 = _interopRequireDefault(_login);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _react2.default.createElement(
-    _reactRouter.Router,
-    { history: _reactRouter.browserHistory },
-    _react2.default.createElement(
-        _reactRouter.Route,
-        { path: '/', component: _header2.default },
-        _react2.default.createElement(_reactRouter.IndexRoute, { component: _main2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'view/:name', component: _show_list_item2.default })
-    )
-);
+var App = function App() {
+    return _react2.default.createElement(
+        _reactRouterDom.BrowserRouter,
+        null,
+        _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(
+                'nav',
+                null,
+                _react2.default.createElement(
+                    'li',
+                    null,
+                    _react2.default.createElement(
+                        _reactRouterDom.Link,
+                        { to: '/' },
+                        'Home'
+                    )
+                ),
+                _react2.default.createElement(
+                    'li',
+                    null,
+                    _react2.default.createElement(
+                        _reactRouterDom.Link,
+                        { to: '/login' },
+                        'Login'
+                    )
+                )
+            ),
+            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _main2.default }),
+            _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _login2.default })
+        )
+    );
+};
 
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-dom/server");
+exports.default = App;
 
 /***/ })
 /******/ ]);
