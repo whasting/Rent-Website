@@ -1,12 +1,13 @@
 import express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { StaticRouter } from 'react-router-dom';
-import App from '../views/src/appRoutes';
+import { StaticRouter} from 'react-router-dom';
 import reducers from '../views/src/reducers/index';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { ADD_ITEM } from '../views/src/actions/list_actions';
+import App from './app';
+
 let router = express.Router();
 
 router.get('/', (req, res) => {
@@ -42,7 +43,6 @@ router.get('/', (req, res) => {
  using JS variables.
  */
 function renderFullPage(html, initialState) {
-    console.log("LOLOL");
     return `
     <!DOCTYPE html>
     <html lang="en">
