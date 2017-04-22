@@ -1,5 +1,5 @@
 import express from 'express';
-import router from './routes/index';
+import router from './app/routes/index';
 import expressSession from 'express-session';
 import passport from 'passport';
 import bodyParser from 'body-parser';
