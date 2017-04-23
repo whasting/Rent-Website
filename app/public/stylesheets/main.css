@@ -1,7 +1,68 @@
-#reactbody{
+#reactbody, [data-reactroot] {
     text-align: center;
+    height: 100%;
+    width: 100%;
 }
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
 .main{
     position: relative;
     margin-top: 5vh;
+}
+
+ul, li {
+  list-style: none;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+input:focus
+{
+	outline:0;
+}
+
+label {
+  margin: 0;
+}
+
+.navbar {
+  position: fixed;
+
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 1px 1px 0px black;
+}
+
+.splash-container {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: top;
+  background-image: url("http://kingofwallpapers.com/buildings-wallpaper/buildings-wallpaper-009.jpg");
+}
+
+.splash {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.rent-logo {
+  color: white;
+  text-shadow: 2px 2px 1px black;
+  font-family: 'Courgette', cursive;
+  font-size: 50px;
 }

@@ -12,7 +12,7 @@ import Signup from './components/signup.jsx';
 const App = () => (
     <Router>
         <div>
-            <nav>
+            <nav className="navbar">
                 <li><Link to="/">Home</Link></li>
             </nav>
             <Route exact path="/" component={Main}/>

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,103 +76,156 @@ module.exports = require("express");
 /* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport");
+module.exports = require("react");
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("react");
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
 module.exports = require("react-router-dom");
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.SignupStrategy = exports.LoginStrategy = undefined;
-
 var _passportLocal = __webpack_require__(19);
 
-var _passport = __webpack_require__(1);
+var models = __webpack_require__(5);
 
-var _passport2 = _interopRequireDefault(_passport);
+module.exports = function (passport) {
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+    // =========================================================================
+    // passport session setup ==================================================
+    // =========================================================================
+    // required for persistent login sessions
+    // passport needs ability to serialize and unserialize users out of session
 
-var LoginStrategy = exports.LoginStrategy = function LoginStrategy(passport) {
-    passport.use(new _passportLocal.Strategy(function (username, password, done) {
-        User.findOne({ username: username }, function (err, user) {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                return done(null, false, { message: 'Incorrect username.' });
-            }
-            if (!user.validPassword(password)) {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-            return done(null, user);
-        });
-    }));
-};
-
-var SignupStrategy = exports.SignupStrategy = function SignupStrategy(passport) {
-    passport.use(new _passportLocal.Strategy(function (username, password, done) {
-        User.findOne({ username: username }, function (err, user) {
-            if (err) {
-                return done(err);
-            }
-            if (!user) {
-                return done(null, false, { message: 'Incorrect username.' });
-            }
-            if (!user.validPassword(password)) {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-            return done(null, user);
-        });
-    }));
-};
-
-_passport2.default.serializeUser(function (user, cb) {
-    cb(null, user.id);
-});
-
-_passport2.default.deserializeUser(function (id, cb) {
-    db.users.findById(id, function (err, user) {
-        if (err) {
-            return cb(err);
-        }
-        cb(null, user);
+    // used to serialize the user for the session
+    passport.serializeUser(function (user, done) {
+        done(null, user.id);
     });
-});
+
+    // used to deserialize the user
+    passport.deserializeUser(function (id, done) {
+        models.User.findById(id, function (err, user) {
+            done(err, user);
+        });
+    });
+
+    passport.use('local-signup', new _passportLocal.Strategy({
+        usernameField: 'username',
+        passwordField: 'password',
+        passReqToCallback: true // allows us to pass back the entire request to the callback
+    }, function (req, username, password, done) {
+        models.User.findOne({ where: { 'username': username } }).then(function (user, err) {
+            // if there are any errors, return the error
+            if (err) return done(err);
+
+            if (user) {
+                return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+            } else {
+                var newUser = new models.User.create({ username: username, password: password });
+
+                // set the user's local credentials
+                newUser.username = username;
+                newUser.password = password;
+
+                // save the user
+                newUser.save(function (err) {
+                    if (err) throw err;
+                    return done(null, newUser);
+                });
+            }
+        });
+    }));
+
+    passport.use('local-login', new _passportLocal.Strategy({
+        usernameField: 'username',
+        passwordField: 'password',
+        passReqToCallback: true // allows us to pass back the entire request to the callback
+    }, function (req, username, password, done) {
+        // callback with email and password from our form
+        debugger;
+        models.User.findOne({ 'username': username }).then(function (err, user) {
+            debugger;
+            if (err) return done(err);
+
+            if (!user) return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+
+            if (!user.validPassword(password)) return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+
+            // all is well, return successful user
+            return done(null, user);
+        });
+    }));
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport");
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+
+var fs = __webpack_require__(18);
+var path = __webpack_require__(20);
+var Sequelize = __webpack_require__(21);
+var basename = path.basename(module.filename);
+var env = process.env.NODE_ENV || 'development';
+var config = __webpack_require__(15)[env];
+var db = {};
+
+if (config.use_env_variable) {
+  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  var sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize.sync();
+}
+
+fs.readdirSync('./app/db/models').filter(function (file) {
+  return file.indexOf('.') !== 0 && file !== 'index.js' && file.slice(-3) === '.js';
+}).forEach(function (file) {
+  var model = sequelize['import'](path.join('./app/db/models', file));
+  db[model.name] = model;
+});
+
+Object.keys(db).forEach(function (modelName) {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(3);
+var _reactRouterDom = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -210,13 +263,13 @@ var App = function App() {
 exports.default = App;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -230,17 +283,17 @@ var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(6);
+var _server = __webpack_require__(7);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouterDom = __webpack_require__(3);
+var _reactRouterDom = __webpack_require__(2);
 
-var _app = __webpack_require__(5);
+var _app = __webpack_require__(6);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -281,7 +334,7 @@ router.get('/', function (req, res) {
 exports.default = router;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -295,64 +348,43 @@ var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _react = __webpack_require__(2);
+var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(6);
+var _server = __webpack_require__(7);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouterDom = __webpack_require__(3);
+var _reactRouterDom = __webpack_require__(2);
 
-var _passport = __webpack_require__(1);
+var _passport = __webpack_require__(4);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _app = __webpack_require__(5);
+var _app = __webpack_require__(6);
 
 var _app2 = _interopRequireDefault(_app);
 
-__webpack_require__(4);
-
-var _bcrypt = __webpack_require__(17);
-
-var _bcrypt2 = _interopRequireDefault(_bcrypt);
+__webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var models = __webpack_require__(14);
+var models = __webpack_require__(5);
 
 var router = _express2.default.Router();
 
-router.post('/login', _passport2.default.authenticate('local', {
+router.post('/login', _passport2.default.authenticate('local-login', {
     successRedirect: '/',
-    failureRedirect: '/login'
-}), function (req, res) {
-    // If this function gets called, authentication was successful.
-    // `req.user` contains the authenticated user.
-    res.redirect('/users/' + req.user.username);
-});
+    failureRedirect: '/login',
+    failureFlash: true
+}));
 
-router.post("/signup", function (req, res, next) {
-    models.User.findOne({
-        where: {
-            username: req.body.username
-        }
-    }).then(function (user) {
-        if (!user) {
-            models.User.create({
-                username: req.body.username,
-                // password: bcrypt.hashSync(req.body.password)
-                password: 'abc123'
-            }).then(function (user) {
-                _passport2.default.authenticate("local", { failureRedirect: "/signup", successRedirect: "/posts" })(req, res, next);
-            });
-        } else {
-            res.send("user exists");
-        }
-    });
-});
+router.post('/signup', _passport2.default.authenticate('local-signup', {
+    successRedirect: '/',
+    failureRedirect: '/signup',
+    failureFlash: true
+}));
 
 router.get('/login', function (req, res) {
     var context = {};
@@ -366,8 +398,9 @@ router.get('/login', function (req, res) {
         _react2.default.createElement(_app2.default, null)
     ));
 
-    res.render('index.ejs', {
-        html: html
+    res.render('login.ejs', {
+        html: html,
+        message: req.flash('signupMessage')
     });
 });
 
@@ -382,39 +415,45 @@ router.get('/signup', function (req, res) {
         },
         _react2.default.createElement(_app2.default, null)
     ));
-    res.render('index.ejs', {
-        html: html
+    res.render('signup.ejs', {
+        html: html, message: req.flash('loginMessage')
     });
 });
 
 exports.default = router;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports) {
-
-module.exports = require("cookie-parser");
-
-/***/ }),
 /* 11 */
 /***/ (function(module, exports) {
 
-module.exports = require("express-session");
+module.exports = require("connect-flash");
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports) {
 
-module.exports = require("morgan");
+module.exports = require("cookie-parser");
 
 /***/ }),
 /* 13 */
+/***/ (function(module, exports) {
+
+module.exports = require("express-session");
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
+
+module.exports = require("morgan");
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -445,49 +484,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-
-var fs = __webpack_require__(18);
-var path = __webpack_require__(20);
-var Sequelize = __webpack_require__(21);
-var basename = path.basename(module.filename);
-var env = process.env.NODE_ENV || 'development';
-var config = __webpack_require__(13)[env];
-var db = {};
-
-if (config.use_env_variable) {
-  var sequelize = new Sequelize(process.env[config.use_env_variable]);
-} else {
-  var sequelize = new Sequelize(config.database, config.username, config.password, config);
-  sequelize.sync();
-}
-
-fs.readdirSync('./app/db/models').filter(function (file) {
-  return file.indexOf('.') !== 0 && file !== 'index.js' && file.slice(-3) === '.js';
-}).forEach(function (file) {
-  var model = sequelize['import'](path.join('./app/db/models', file));
-  db[model.name] = model;
-});
-
-Object.keys(db).forEach(function (modelName) {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-sequelize.sync();
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-module.exports = db;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module)))
-
-/***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -497,49 +494,50 @@ var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _appRouter = __webpack_require__(7);
+var _appRouter = __webpack_require__(8);
 
 var _appRouter2 = _interopRequireDefault(_appRouter);
 
-var _authRouter = __webpack_require__(8);
+var _authRouter = __webpack_require__(9);
 
 var _authRouter2 = _interopRequireDefault(_authRouter);
 
-var _expressSession = __webpack_require__(11);
+var _expressSession = __webpack_require__(13);
 
 var _expressSession2 = _interopRequireDefault(_expressSession);
 
-var _passport = __webpack_require__(1);
+var _passport = __webpack_require__(4);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _bodyParser = __webpack_require__(9);
+var _bodyParser = __webpack_require__(10);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _cookieParser = __webpack_require__(10);
+var _cookieParser = __webpack_require__(12);
 
 var _cookieParser2 = _interopRequireDefault(_cookieParser);
 
-var _morgan = __webpack_require__(12);
+var _morgan = __webpack_require__(14);
 
 var _morgan2 = _interopRequireDefault(_morgan);
 
-var _passport3 = __webpack_require__(4);
+var _connectFlash = __webpack_require__(11);
+
+var _connectFlash2 = _interopRequireDefault(_connectFlash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
 
+__webpack_require__(3)(_passport2.default);
+
 // Views
-app.set('views', 'app/views');
+app.set('views', 'app/views/templates');
 app.set('view engine', 'ejs');
 
 app.use('/bin', _express2.default.static('./bin'));
 app.use('/stylesheets', _express2.default.static('./app/public/stylesheets'));
-
-(0, _passport3.LoginStrategy)(_passport2.default);
-(0, _passport3.SignupStrategy)(_passport2.default);
 
 // Express
 app.use((0, _morgan2.default)('dev'));
@@ -550,6 +548,7 @@ app.use((0, _bodyParser2.default)());
 app.use((0, _expressSession2.default)({ secret: 'mySecretKey' }));
 app.use(_passport2.default.initialize());
 app.use(_passport2.default.session());
+app.use((0, _connectFlash2.default)());
 
 // Routes
 app.use('/', _appRouter2.default);
@@ -560,7 +559,7 @@ app.listen(3000, function () {
 });
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -586,12 +585,6 @@ module.exports = function(module) {
 	return module;
 };
 
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = require("bcrypt");
 
 /***/ }),
 /* 18 */
