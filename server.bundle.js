@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -102,7 +102,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SignupStrategy = exports.LoginStrategy = undefined;
 
-var _passportLocal = __webpack_require__(15);
+var _passportLocal = __webpack_require__(19);
 
 var _passport = __webpack_require__(1);
 
@@ -315,11 +315,13 @@ var _app2 = _interopRequireDefault(_app);
 
 __webpack_require__(4);
 
-var _user = __webpack_require__(13);
+var _bcrypt = __webpack_require__(17);
 
-var _user2 = _interopRequireDefault(_user);
+var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var models = __webpack_require__(14);
 
 var router = _express2.default.Router();
 
@@ -333,16 +335,16 @@ router.post('/login', _passport2.default.authenticate('local', {
 });
 
 router.post("/signup", function (req, res, next) {
-    console.log('hahaha');
-    _user2.default.findOne({
+    models.User.findOne({
         where: {
             username: req.body.username
         }
     }).then(function (user) {
         if (!user) {
-            _user2.default.create({
+            models.User.create({
                 username: req.body.username,
-                password: bcrypt.hashSync(req.body.password)
+                // password: bcrypt.hashSync(req.body.password)
+                password: 'abc123'
             }).then(function (user) {
                 _passport2.default.authenticate("local", { failureRedirect: "/signup", successRedirect: "/posts" })(req, res, next);
             });
@@ -418,22 +420,74 @@ module.exports = require("morgan");
 "use strict";
 
 
-module.exports = function (sequelize, DataTypes) {
-  var User = sequelize.define('User', {
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
-  }, {
-    classMethods: {
-      associate: function associate(models) {
-        // associations can be defined here
-      }
+module.exports = {
+    "development": {
+        "username": "root",
+        "password": "root",
+        "database": "rent_dev",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
+    },
+    "test": {
+        "username": "root",
+        "password": null,
+        "database": "database_test",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
+    },
+    "production": {
+        "username": "root",
+        "password": null,
+        "database": "database_production",
+        "host": "127.0.0.1",
+        "dialect": "postgres"
     }
-  });
-  return User;
 };
 
 /***/ }),
 /* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+
+var fs = __webpack_require__(18);
+var path = __webpack_require__(20);
+var Sequelize = __webpack_require__(21);
+var basename = path.basename(module.filename);
+var env = process.env.NODE_ENV || 'development';
+var config = __webpack_require__(13)[env];
+var db = {};
+
+if (config.use_env_variable) {
+  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  var sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize.sync();
+}
+
+fs.readdirSync('./app/db/models').filter(function (file) {
+  return file.indexOf('.') !== 0 && file !== 'index.js' && file.slice(-3) === '.js';
+}).forEach(function (file) {
+  var model = sequelize['import'](path.join('./app/db/models', file));
+  db[model.name] = model;
+});
+
+Object.keys(db).forEach(function (modelName) {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+sequelize.sync();
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module)))
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -506,10 +560,62 @@ app.listen(3000, function () {
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("bcrypt");
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = require("fs");
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("passport-local");
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+module.exports = require("sequelize");
 
 /***/ })
 /******/ ]);

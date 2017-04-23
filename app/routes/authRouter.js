@@ -6,7 +6,7 @@ import passport from 'passport';
 import App from './app';
 import '../../config/passport';
 import bcrypt from 'bcrypt';
-var models = require('../db/models');
+const models = require('../db/models');
 
 
 let router = express.Router();
@@ -22,7 +22,7 @@ router.post('/login', passport.authenticate('local', {
     });
 
 
-router.post("/signup", function(req, res){
+router.post("/signup", function(req, res, next){
     models.User.findOne({
         where: {
             username: req.body.username,
@@ -31,7 +31,8 @@ router.post("/signup", function(req, res){
         if(!user){
             models.User.create({
                 username: req.body.username,
-                password: bcrypt.hashSync(req.body.password)
+                // password: bcrypt.hashSync(req.body.password)
+                password: 'abc123'
             }).then(function(user){
                 passport.authenticate("local", {failureRedirect:"/signup", successRedirect: "/posts"})(req, res, next)
             })

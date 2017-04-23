@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon server.bundle.js",
     "migrate": "node_modules/.bin/sequelize db:migrate --config \"./app/db/config.js\"",
-    "migration-create": "node_modules/.bin/sequelize migration:create",
+    "migration-create": "node_modules/.bin/sequelize migration:create --config \"./app/db/config.js\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
