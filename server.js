@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import {
 	LoginStrategy,
     SignupStrategy,
-} from './app/config/passport';
+} from './config/passport';
 
 let app = express();
 

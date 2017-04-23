@@ -5,7 +5,8 @@
   "main": "server.bundle.js",
   "scripts": {
     "start": "nodemon server.bundle.js",
-    "migrate" :  "node_modules/.bin/sequelize db:migrate",
+    "migrate": "node_modules/.bin/sequelize db:migrate --config \"./app/db/config.js\"",
+    "migration-create": "node_modules/.bin/sequelize migration:create",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-1": "^6.5.0",
+    "bcrypt": "^1.0.2",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.1",
     "connect-flash": "^0.1.1",
@@ -38,6 +40,7 @@
     "ejs": "^2.5.6",
     "express": "^4.14.0",
     "express-session": "^1.15.2",
+    "json-loader": "^0.5.4",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pg": "^6.1.5",

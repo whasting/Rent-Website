@@ -4,11 +4,12 @@ import ReactDOMServer from 'react-dom/server';
 import { StaticRouter} from 'react-router-dom';
 import passport from 'passport';
 import App from './app';
-import '../config/passport';
-import User from '../../database/models/user';
+import '../../config/passport';
+import bcrypt from 'bcrypt';
+var models = require('../db/models');
+
 
 let router = express.Router();
-
 
 router.post('/login', passport.authenticate('local', {
         successRedirect: '/',
@@ -21,24 +22,23 @@ router.post('/login', passport.authenticate('local', {
     });
 
 
-router.post("/signup", function(req, res, next){
-    console.log('hahaha');
-  User.findOne({
-    where: {
-     username: req.body.username
-    }
-  }).then(function(user){
-    if(!user){
-      User.create({
-        username: req.body.username,
-	password: bcrypt.hashSync(req.body.password)
-      }).then(function(user){
-        passport.authenticate("local", {failureRedirect:"/signup", successRedirect: "/posts"})(req, res, next)
-      })
-    } else {
-      res.send("user exists")
-    }
-  });
+router.post("/signup", function(req, res){
+    models.User.findOne({
+        where: {
+            username: req.body.username,
+        }
+    }).then(function(user){
+        if(!user){
+            models.User.create({
+                username: req.body.username,
+                password: bcrypt.hashSync(req.body.password)
+            }).then(function(user){
+                passport.authenticate("local", {failureRedirect:"/signup", successRedirect: "/posts"})(req, res, next)
+            })
+        } else {
+            res.send("user exists")
+        }
+    });
 });
 
 router.get('/login', (req, res) => {
