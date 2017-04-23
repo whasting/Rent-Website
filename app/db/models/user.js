@@ -18,8 +18,8 @@ module.exports = function(sequelize, DataTypes) {
         },
         instanceMethods: {
             validPassword: function(password) {
-                return password === this.password;
-                // return bcrypt.compareSync(password, this.password);
+                return password === this.dataValues.password;
+                // return bcrypt.compareSync(password, this.dataValues.password);
             },
             generateHash: function(password) {
                 return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);

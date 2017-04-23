@@ -1,5 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local';
 const models = require('../app/db/models');
+const bcrypt = require('bcrypt-nodejs');
 
 module.exports = function(passport) {
 
@@ -16,8 +17,8 @@ module.exports = function(passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function(id, done) {
-        models.User.findById(id).then((err, user) => {
-            done(err, user);
+        models.User.findById(id).then(function (user) {
+            done(null, user);
         });
     });
 
@@ -34,19 +35,19 @@ module.exports = function(passport) {
             if (user) {
                 return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
             } else {
-                // TODO: MAKE GENERATE HASH GET CALLED AT SOME OTHER POINT
-                let newUser = models.User.create({
-                    username: username,
-                    password: password
-                    // password: req.user.generatehash(password)
-                });
-
-                // save the user
-                newUser.save().then((err) => {
-                    if (err)
-                        throw err;
-                    return done(null, newUser);
-                });
+                // let password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+                models.User
+                    .build({
+                        username: username,
+                        password: password
+                    })
+                    .save()
+                    .then((user) => {
+                        return done(null, user);
+                    })
+                    .catch(err => {
+                        return done(err);
+                    });
             }
 
         });
@@ -61,8 +62,6 @@ module.exports = function(passport) {
         },
         function(req, username, password, done) { // callback with email and password from our form
             models.User.findOne({where: {'username':  username}}).then((user) => {
-                // if (err)
-                //     return done(err);
 
                 if (!user)
                     return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
@@ -72,7 +71,10 @@ module.exports = function(passport) {
 
                 // all is well, return successful user
                 return done(null, user);
-            });
+            })
+                .catch(err => {
+                    return done(err);
+                });
 
         }));
 
