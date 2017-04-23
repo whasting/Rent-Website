@@ -6,11 +6,16 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import passportConfig from './config/passport';
+import path from 'path';
 
 let app = express();
 
+// Views
+app.set('views', 'app/views');
+app.set('view engine', 'ejs');
+
 app.use('/bin', express.static('./bin'));
-app.use('/stylesheets', express.static('./public/stylesheets'));
+app.use('/stylesheets', express.static('./app/public/stylesheets'));
 
 passportConfig(passport);
 
@@ -18,7 +23,6 @@ passportConfig(passport);
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser());
-
 // Passport
 app.use(expressSession({secret: 'mySecretKey'}));
 app.use(passport.initialize());

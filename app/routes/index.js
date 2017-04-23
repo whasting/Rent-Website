@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
         }
     });
 
-    const finalState = store.getState();
+    const finalState = JSON.stringify(store.getState());
     const html = ReactDOMServer.renderToString(
         <Provider store={store}>
             <StaticRouter
@@ -34,8 +34,11 @@ router.get('/', (req, res) => {
             </StaticRouter>
         </Provider>
     );
-
-    res.status(200).send(renderFullPage(html, finalState));
+    res.render('index.ejs', {
+        initialState: finalState,
+        html: html,
+    });
+    // res.status(200).send(renderFullPage(html, finalState));
 });
 
 router.post('/login',
@@ -49,8 +52,7 @@ router.post('/login',
         res.redirect('/users/' + req.user.username);
     });
 
-
-router.get('/login', (req, res) => {
+router.get('/signup', function(req, res) {
     const context = {};
     const store = createStore(reducers);
 
@@ -61,6 +63,32 @@ router.get('/login', (req, res) => {
             description: 'Description for components'
         }
     });
+
+    const finalState = store.getState();
+    const html = ReactDOMServer.renderToString(
+        <Provider store={store}>
+            <StaticRouter
+                location={req.url}
+                context={context}
+            >
+                <App/>
+            </StaticRouter>
+        </Provider>
+    );
+
+    res.status(200).send(renderFullPage(html, finalState));
+    // res.render('register', {message: req.flash('message')});
+});
+
+
+router.post('/signup', passport.authenticate('signup', {
+    successRedirect: '/home',
+    failureRedirect: '/signup',
+    failureFlash : true
+  }));
+
+router.get('/login', (req, res) => {
+    const context = {};
 
     const finalState = store.getState();
     const html = ReactDOMServer.renderToString(

@@ -33,6 +33,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.1",
     "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.6",
     "express": "^4.14.0",
     "express-session": "^1.15.2",
     "passport": "^0.3.2",
