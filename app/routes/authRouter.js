@@ -5,7 +5,6 @@ import { StaticRouter} from 'react-router-dom';
 import passport from 'passport';
 import App from './app';
 import '../../config/passport';
-const models = require('../db/models');
 
 
 let router = express.Router();
@@ -15,7 +14,6 @@ router.post('/login', passport.authenticate('local-login', {
     failureRedirect: '/login',
     failureFlash : true,
 }));
-
 
 router.post('/signup', passport.authenticate('local-signup', {
     successRedirect : '/',
@@ -37,7 +35,7 @@ router.get('/login', (req, res) => {
 
     res.render('login.ejs', {
         html: html,
-        message: req.flash('signupMessage')
+        message: req.flash('loginMessage')
     });
 });
 
@@ -53,7 +51,8 @@ router.get('/signup', function(req, res) {
         </StaticRouter>
     );
     res.render('signup.ejs', {
-        html: html, message: req.flash('loginMessage')
+        html: html,
+        message: req.flash('loginMessage')
     });
 });
 
