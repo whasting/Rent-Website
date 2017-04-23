@@ -39,7 +39,7 @@ module.exports = [
     },
     {
         context: __dirname,
-        entry: './views/index.js',
+        entry: './app/views/index.js',
         output: {
             path: path.resolve(__dirname, './bin'),
             filename: 'app.bundle.js',
