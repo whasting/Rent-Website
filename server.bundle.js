@@ -63,117 +63,35 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = require("react");
-
-/***/ }),
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */
-/***/ (function(module, exports) {
-
 module.exports = require("express");
 
 /***/ }),
-/* 6 */,
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _express = __webpack_require__(5);
-
-var _express2 = _interopRequireDefault(_express);
-
-var _appRouter = __webpack_require__(21);
-
-var _appRouter2 = _interopRequireDefault(_appRouter);
-
-var _authRouter = __webpack_require__(22);
-
-var _authRouter2 = _interopRequireDefault(_authRouter);
-
-var _expressSession = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"express-session\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _expressSession2 = _interopRequireDefault(_expressSession);
-
-var _passport = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"passport\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _passport2 = _interopRequireDefault(_passport);
-
-var _bodyParser = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"body-parser\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _bodyParser2 = _interopRequireDefault(_bodyParser);
-
-var _cookieParser = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"cookie-parser\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _cookieParser2 = _interopRequireDefault(_cookieParser);
-
-var _morgan = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"morgan\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _morgan2 = _interopRequireDefault(_morgan);
-
-var _passport3 = __webpack_require__(19);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var app = (0, _express2.default)();
-
-// Views
-app.set('views', 'app/views');
-app.set('view engine', 'ejs');
-
-app.use('/bin', _express2.default.static('./bin'));
-app.use('/stylesheets', _express2.default.static('./app/public/stylesheets'));
-
-(0, _passport3.LoginStrategy)(_passport2.default);
-(0, _passport3.SignupStrategy)(_passport2.default);
-
-// Express
-app.use((0, _morgan2.default)('dev'));
-app.use((0, _cookieParser2.default)());
-app.use((0, _bodyParser2.default)());
-
-// Passport
-app.use((0, _expressSession2.default)({ secret: 'mySecretKey' }));
-app.use(_passport2.default.initialize());
-app.use(_passport2.default.session());
-
-// Routes
-app.use('/', _appRouter2.default);
-app.use('/', _authRouter2.default);
-
-app.listen(3000, function () {
-	console.log('Hello World listening on port 3000!');
-});
-
-/***/ }),
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
-/* 17 */,
-/* 18 */
+/* 1 */
 /***/ (function(module, exports) {
 
-module.exports = require("react-dom/server");
+module.exports = require("passport");
 
 /***/ }),
-/* 19 */
+/* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("react");
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router-dom");
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -184,9 +102,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SignupStrategy = exports.LoginStrategy = undefined;
 
-var _passportLocal = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"passport-local\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _passportLocal = __webpack_require__(19);
 
-var _passport = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"passport\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _passport = __webpack_require__(1);
 
 var _passport2 = _interopRequireDefault(_passport);
 
@@ -240,7 +158,7 @@ _passport2.default.deserializeUser(function (id, cb) {
 });
 
 /***/ }),
-/* 20 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -250,11 +168,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _react = __webpack_require__(0);
+var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"react-router-dom\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _reactRouterDom = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -292,7 +210,13 @@ var App = function App() {
 exports.default = App;
 
 /***/ }),
-/* 21 */
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-dom/server");
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -302,21 +226,21 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _express = __webpack_require__(5);
+var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _react = __webpack_require__(0);
+var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(18);
+var _server = __webpack_require__(6);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouterDom = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"react-router-dom\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _reactRouterDom = __webpack_require__(3);
 
-var _app = __webpack_require__(20);
+var _app = __webpack_require__(5);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -357,7 +281,7 @@ router.get('/', function (req, res) {
 exports.default = router;
 
 /***/ }),
-/* 22 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -367,37 +291,37 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _express = __webpack_require__(5);
+var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _react = __webpack_require__(0);
+var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(18);
+var _server = __webpack_require__(6);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouterDom = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"react-router-dom\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _reactRouterDom = __webpack_require__(3);
 
-var _passport = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"passport\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _passport = __webpack_require__(1);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _app = __webpack_require__(20);
+var _app = __webpack_require__(5);
 
 var _app2 = _interopRequireDefault(_app);
 
-__webpack_require__(19);
+__webpack_require__(4);
 
-var _bcrypt = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"bcrypt\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var _bcrypt = __webpack_require__(17);
 
 var _bcrypt2 = _interopRequireDefault(_bcrypt);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var models = __webpack_require__(24);
+var models = __webpack_require__(14);
 
 var router = _express2.default.Router();
 
@@ -466,7 +390,31 @@ router.get('/signup', function (req, res) {
 exports.default = router;
 
 /***/ }),
-/* 23 */
+/* 9 */
+/***/ (function(module, exports) {
+
+module.exports = require("body-parser");
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+module.exports = require("cookie-parser");
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+module.exports = require("express-session");
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
+module.exports = require("morgan");
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -497,18 +445,18 @@ module.exports = {
 };
 
 /***/ }),
-/* 24 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(module) {
 
-var fs = __webpack_require__(26);
-var path = __webpack_require__(27);
-var Sequelize = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"sequelize\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+var fs = __webpack_require__(18);
+var path = __webpack_require__(20);
+var Sequelize = __webpack_require__(21);
 var basename = path.basename(module.filename);
 var env = process.env.NODE_ENV || 'development';
-var config = __webpack_require__(23)[env];
+var config = __webpack_require__(13)[env];
 var db = {};
 
 if (config.use_env_variable) {
@@ -536,10 +484,83 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)(module)))
 
 /***/ }),
-/* 25 */
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _express = __webpack_require__(0);
+
+var _express2 = _interopRequireDefault(_express);
+
+var _appRouter = __webpack_require__(7);
+
+var _appRouter2 = _interopRequireDefault(_appRouter);
+
+var _authRouter = __webpack_require__(8);
+
+var _authRouter2 = _interopRequireDefault(_authRouter);
+
+var _expressSession = __webpack_require__(11);
+
+var _expressSession2 = _interopRequireDefault(_expressSession);
+
+var _passport = __webpack_require__(1);
+
+var _passport2 = _interopRequireDefault(_passport);
+
+var _bodyParser = __webpack_require__(9);
+
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
+var _cookieParser = __webpack_require__(10);
+
+var _cookieParser2 = _interopRequireDefault(_cookieParser);
+
+var _morgan = __webpack_require__(12);
+
+var _morgan2 = _interopRequireDefault(_morgan);
+
+var _passport3 = __webpack_require__(4);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var app = (0, _express2.default)();
+
+// Views
+app.set('views', 'app/views');
+app.set('view engine', 'ejs');
+
+app.use('/bin', _express2.default.static('./bin'));
+app.use('/stylesheets', _express2.default.static('./app/public/stylesheets'));
+
+(0, _passport3.LoginStrategy)(_passport2.default);
+(0, _passport3.SignupStrategy)(_passport2.default);
+
+// Express
+app.use((0, _morgan2.default)('dev'));
+app.use((0, _cookieParser2.default)());
+app.use((0, _bodyParser2.default)());
+
+// Passport
+app.use((0, _expressSession2.default)({ secret: 'mySecretKey' }));
+app.use(_passport2.default.initialize());
+app.use(_passport2.default.session());
+
+// Routes
+app.use('/', _appRouter2.default);
+app.use('/', _authRouter2.default);
+
+app.listen(3000, function () {
+	console.log('Hello World listening on port 3000!');
+});
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -567,16 +588,34 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 26 */
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = require("bcrypt");
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 27 */
+/* 19 */
+/***/ (function(module, exports) {
+
+module.exports = require("passport-local");
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+module.exports = require("sequelize");
 
 /***/ })
 /******/ ]);

@@ -5,42 +5,23 @@ import { StaticRouter} from 'react-router-dom';
 import passport from 'passport';
 import App from './app';
 import '../../config/passport';
-import bcrypt from 'bcrypt';
 const models = require('../db/models');
 
 
 let router = express.Router();
 
-router.post('/login', passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login',
-    }),
-    function(req, res) {
-        // If this function gets called, authentication was successful.
-        // `req.user` contains the authenticated user.
-        res.redirect('/users/' + req.user.username);
-    });
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash : true,
+}));
 
 
-router.post("/signup", function(req, res, next){
-    models.User.findOne({
-        where: {
-            username: req.body.username,
-        }
-    }).then(function(user){
-        if(!user){
-            models.User.create({
-                username: req.body.username,
-                // password: bcrypt.hashSync(req.body.password)
-                password: 'abc123'
-            }).then(function(user){
-                passport.authenticate("local", {failureRedirect:"/signup", successRedirect: "/posts"})(req, res, next)
-            })
-        } else {
-            res.send("user exists")
-        }
-    });
-});
+router.post('/signup', passport.authenticate('local-signup', {
+    successRedirect : '/',
+    failureRedirect : '/signup',
+    failureFlash : true,
+}));
 
 router.get('/login', (req, res) => {
     const context = {};
@@ -54,8 +35,9 @@ router.get('/login', (req, res) => {
         </StaticRouter>
     );
 
-    res.render('index.ejs', {
+    res.render('login.ejs', {
         html: html,
+        message: req.flash('signupMessage')
     });
 });
 
@@ -70,8 +52,8 @@ router.get('/signup', function(req, res) {
             <App/>
         </StaticRouter>
     );
-    res.render('index.ejs', {
-        html: html,
+    res.render('signup.ejs', {
+        html: html, message: req.flash('loginMessage')
     });
 });
 

@@ -6,22 +6,19 @@ import passport from 'passport';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import {
-	LoginStrategy,
-    SignupStrategy,
-} from './config/passport';
+import flash from 'connect-flash';
 
 let app = express();
 
+require('./config/passport')(passport);
+
 // Views
-app.set('views', 'app/views');
+app.set('views', 'app/views/templates');
 app.set('view engine', 'ejs');
 
 app.use('/bin', express.static('./bin'));
 app.use('/stylesheets', express.static('./app/public/stylesheets'));
 
-LoginStrategy(passport);
-SignupStrategy(passport);
 
 // Express
 app.use(morgan('dev'));
@@ -32,6 +29,7 @@ app.use(bodyParser());
 app.use(expressSession({secret: 'mySecretKey'}));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 // Routes
 app.use('/', appRouter);
