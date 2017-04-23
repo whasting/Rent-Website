@@ -74,6 +74,18 @@ module.exports = require("react");
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-redux");
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+module.exports = require("react-router");
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -111,18 +123,6 @@ function addItem(item) {
 }
 
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-redux");
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("react-router");
-
-/***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
@@ -153,25 +153,25 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(16);
+var _server = __webpack_require__(18);
 
 var _server2 = _interopRequireDefault(_server);
 
-var _reactRouter = __webpack_require__(3);
+var _reactRouter = __webpack_require__(2);
 
-var _routes = __webpack_require__(15);
+var _routes = __webpack_require__(17);
 
 var _routes2 = _interopRequireDefault(_routes);
 
-var _index = __webpack_require__(13);
+var _index = __webpack_require__(15);
 
 var _index2 = _interopRequireDefault(_index);
 
 var _redux = __webpack_require__(4);
 
-var _reactRedux = __webpack_require__(2);
+var _reactRedux = __webpack_require__(1);
 
-var _list_actions = __webpack_require__(1);
+var _list_actions = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -341,11 +341,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _list_view = __webpack_require__(11);
+var _list_view = __webpack_require__(13);
 
 var _list_view2 = _interopRequireDefault(_list_view);
 
-var _list_item = __webpack_require__(10);
+var _list_item = __webpack_require__(12);
 
 var _list_item2 = _interopRequireDefault(_list_item);
 
@@ -384,7 +384,9 @@ var Main = function (_Component) {
 exports.default = Main;
 
 /***/ }),
-/* 10 */
+/* 10 */,
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -400,9 +402,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(2);
+var _reactRedux = __webpack_require__(1);
 
-var _reactRouter = __webpack_require__(3);
+var _reactRouter = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -492,7 +494,7 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps)(ListItem);
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -508,11 +510,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(2);
+var _reactRedux = __webpack_require__(1);
 
 var _redux = __webpack_require__(4);
 
-var _list_actions = __webpack_require__(1);
+var _list_actions = __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -597,7 +599,7 @@ https://facebook.github.io/react/docs/higher-order-components.html
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(ListView);
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -613,11 +615,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRedux = __webpack_require__(2);
+var _reactRedux = __webpack_require__(1);
 
-var _list_actions = __webpack_require__(1);
+var _list_actions = __webpack_require__(3);
 
-var _reactRouter = __webpack_require__(3);
+var _reactRouter = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -704,7 +706,7 @@ function mapStateToProps(state) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, { getListItem: _list_actions.getListItem })(ShowListItem);
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -716,7 +718,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _redux = __webpack_require__(4);
 
-var _lists = __webpack_require__(14);
+var _lists = __webpack_require__(16);
 
 var _lists2 = _interopRequireDefault(_lists);
 
@@ -729,7 +731,7 @@ var rootReducer = (0, _redux.combineReducers)({
 exports.default = rootReducer;
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -763,7 +765,7 @@ exports.default = function () {
     return state;
 };
 
-var _list_actions = __webpack_require__(1);
+var _list_actions = __webpack_require__(3);
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -772,7 +774,7 @@ var ListItems = [{ name: 'Actions', description: 'Description for actions' }, { 
 var INITIAL_STATE = { all: ListItems, item: null };
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -786,9 +788,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = __webpack_require__(3);
+var _reactRouter = __webpack_require__(2);
 
-var _show_list_item = __webpack_require__(12);
+var _show_list_item = __webpack_require__(14);
 
 var _show_list_item2 = _interopRequireDefault(_show_list_item);
 
@@ -814,7 +816,7 @@ exports.default = _react2.default.createElement(
 );
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
