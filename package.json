@@ -5,6 +5,7 @@
   "main": "server.bundle.js",
   "scripts": {
     "start": "nodemon server.bundle.js",
+    "migrate" :  "node_modules/.bin/sequelize db:migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -39,12 +40,15 @@
     "express-session": "^1.15.2",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "pg": "^6.1.5",
+    "pg-hstore": "^2.3.2",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-redux": "^5.0.3",
     "react-router-dom": "^4.1.1",
     "redux": "^3.5.2",
     "sequelize": "^3.30.4",
+    "sequelize-cli": "^2.7.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1"
   },

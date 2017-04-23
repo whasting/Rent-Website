@@ -1,4 +1,5 @@
 import { Strategy as LocalStrategy } from 'passport-local';
+import passport from 'passport';
 
 
 export const LoginStrategy = passport => {
@@ -39,13 +40,13 @@ export const SignupStrategy = passport => {
     ));
 };
 
-// passport.serializeUser(function(user, cb) {
-//   cb(null, user.id);
-// });
-//
-// passport.deserializeUser(function(id, cb) {
-//   db.users.findById(id, function (err, user) {
-//     if (err) { return cb(err); }
-//     cb(null, user);
-//   });
-// });
+passport.serializeUser(function(user, cb) {
+  cb(null, user.id);
+});
+
+passport.deserializeUser(function(id, cb) {
+  db.users.findById(id, function (err, user) {
+    if (err) { return cb(err); }
+    cb(null, user);
+  });
+});

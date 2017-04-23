@@ -2,13 +2,10 @@ import express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter} from 'react-router-dom';
-import reducers from '../views/src/reducers/index';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
-import { ADD_ITEM } from '../views/src/actions/list_actions';
 import passport from 'passport';
 import App from './app';
-import '../../config/passport';
+import '../config/passport';
+import User from '../../database/models/user';
 
 let router = express.Router();
 
@@ -24,70 +21,55 @@ router.post('/login', passport.authenticate('local', {
     });
 
 
-router.post('/signup', passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/signup',
-    }),
-    function(req, res) {
-        res.redirect('/users/' + req.user.username);
+router.post("/signup", function(req, res, next){
+    console.log('hahaha');
+  User.findOne({
+    where: {
+     username: req.body.username
     }
-);
+  }).then(function(user){
+    if(!user){
+      User.create({
+        username: req.body.username,
+	password: bcrypt.hashSync(req.body.password)
+      }).then(function(user){
+        passport.authenticate("local", {failureRedirect:"/signup", successRedirect: "/posts"})(req, res, next)
+      })
+    } else {
+      res.send("user exists")
+    }
+  });
+});
 
 router.get('/login', (req, res) => {
     const context = {};
 
-    const store = createStore(reducers);
-    const finalState = JSON.stringify(store.getState());
-
-    store.dispatch({
-        type: ADD_ITEM,
-        payload: {
-            name: 'Components',
-            description: 'Description for components'
-        }
-    });
     const html = ReactDOMServer.renderToString(
-        <Provider store={store}>
-            <StaticRouter
-                location={req.url}
-                context={context}
-            >
-                <App/>
-            </StaticRouter>
-        </Provider>
+        <StaticRouter
+            location={req.url}
+            context={context}
+        >
+            <App/>
+        </StaticRouter>
     );
 
     res.render('index.ejs', {
-        initialState: finalState,
         html: html,
     });
 });
 
 router.get('/signup', function(req, res) {
-    const context = {};
-    const store = createStore(reducers);
-    store.dispatch({
-        type: ADD_ITEM,
-        payload: {
-            name: 'Components',
-            description: 'Description for components'
-        }
-    });
+    let context = {};
 
-    const finalState = JSON.stringify(store.getState());
     const html = ReactDOMServer.renderToString(
-        <Provider store={store}>
-            <StaticRouter
-                location={req.url}
-                context={context}
-            >
-                <App/>
-            </StaticRouter>
-        </Provider>
+        <StaticRouter
+            location={req.url}
+            context={context}
+        >
+            <App/>
+        </StaticRouter>
     );
-
     res.render('index.ejs', {
-        initialState: finalState,
         html: html,
     });
 });
