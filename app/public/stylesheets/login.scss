@@ -4,6 +4,8 @@
   flex-direction: column;
   border: 1px solid black;
   border-radius: 1px;
+  background-color: rgba(255,255,255, 0.95);
+  padding: 15px 25px;
 }
 
 .login-form {
@@ -20,5 +22,9 @@
 }
 
 .login-button {
-
+  background-color: #5076ff;
+  border: none;
+  color: white;
+  padding: 2px 25px;
+  margin-top: 10px;
 }

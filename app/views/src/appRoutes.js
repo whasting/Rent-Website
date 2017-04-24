@@ -16,8 +16,6 @@ const App = () => (
                 <li><Link to="/">Home</Link></li>
             </nav>
             <Route exact path="/" component={Main}/>
-            <Route path="/login" component={Login}/>
-            <Route path="/signup" component={Signup}/>
         </div>
     </Router>
 );

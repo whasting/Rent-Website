@@ -30,9 +30,18 @@ router.get('/', (req, res) => {
             <App/>
         </StaticRouter>
     );
-    res.render('index.ejs', {
+
+    if (req.user) {
+      res.render('index.ejs', {
         html: html,
-    });
+      });
+    } else {
+      res.render('login.ejs', {
+        html: html,
+        message: req.flash('loginMessage')
+      });
+    }
+
 });
 
-export default router
+export default router;

@@ -91,9 +91,10 @@ module.exports = require("react-router-dom");
 "use strict";
 
 
-var _passportLocal = __webpack_require__(19);
+var _passportLocal = __webpack_require__(20);
 
-var models = __webpack_require__(5);
+var models = __webpack_require__(15);
+var bcrypt = __webpack_require__(18);
 
 module.exports = function (passport) {
 
@@ -110,8 +111,8 @@ module.exports = function (passport) {
 
     // used to deserialize the user
     passport.deserializeUser(function (id, done) {
-        models.User.findById(id, function (err, user) {
-            done(err, user);
+        models.User.findById(id).then(function (user) {
+            done(null, user);
         });
     });
 
@@ -127,16 +128,14 @@ module.exports = function (passport) {
             if (user) {
                 return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
             } else {
-                var newUser = new models.User.create({ username: username, password: password });
-
-                // set the user's local credentials
-                newUser.username = username;
-                newUser.password = password;
-
-                // save the user
-                newUser.save(function (err) {
-                    if (err) throw err;
-                    return done(null, newUser);
+                // let password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+                models.User.build({
+                    username: username,
+                    password: password
+                }).save().then(function (user) {
+                    return done(null, user);
+                }).catch(function (err) {
+                    return done(err);
                 });
             }
         });
@@ -148,10 +147,7 @@ module.exports = function (passport) {
         passReqToCallback: true // allows us to pass back the entire request to the callback
     }, function (req, username, password, done) {
         // callback with email and password from our form
-        debugger;
-        models.User.findOne({ 'username': username }).then(function (err, user) {
-            debugger;
-            if (err) return done(err);
+        models.User.findOne({ where: { 'username': username } }).then(function (user) {
 
             if (!user) return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
 
@@ -159,6 +155,8 @@ module.exports = function (passport) {
 
             // all is well, return successful user
             return done(null, user);
+        }).catch(function (err) {
+            return done(err);
         });
     }));
 };
@@ -171,47 +169,6 @@ module.exports = require("passport");
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
-
-var fs = __webpack_require__(18);
-var path = __webpack_require__(20);
-var Sequelize = __webpack_require__(21);
-var basename = path.basename(module.filename);
-var env = process.env.NODE_ENV || 'development';
-var config = __webpack_require__(15)[env];
-var db = {};
-
-if (config.use_env_variable) {
-  var sequelize = new Sequelize(process.env[config.use_env_variable]);
-} else {
-  var sequelize = new Sequelize(config.database, config.username, config.password, config);
-  sequelize.sync();
-}
-
-fs.readdirSync('./app/db/models').filter(function (file) {
-  return file.indexOf('.') !== 0 && file !== 'index.js' && file.slice(-3) === '.js';
-}).forEach(function (file) {
-  var model = sequelize['import'](path.join('./app/db/models', file));
-  db[model.name] = model;
-});
-
-Object.keys(db).forEach(function (modelName) {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-module.exports = db;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -263,13 +220,13 @@ var App = function App() {
 exports.default = App;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-dom/server");
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -287,13 +244,13 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(7);
+var _server = __webpack_require__(6);
 
 var _server2 = _interopRequireDefault(_server);
 
 var _reactRouterDom = __webpack_require__(2);
 
-var _app = __webpack_require__(6);
+var _app = __webpack_require__(5);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -326,15 +283,23 @@ router.get('/', function (req, res) {
         },
         _react2.default.createElement(_app2.default, null)
     ));
-    res.render('index.ejs', {
-        html: html
-    });
+
+    if (req.user) {
+        res.render('index.ejs', {
+            html: html
+        });
+    } else {
+        res.render('login.ejs', {
+            html: html,
+            message: req.flash('loginMessage')
+        });
+    }
 });
 
 exports.default = router;
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -352,7 +317,7 @@ var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _server = __webpack_require__(7);
+var _server = __webpack_require__(6);
 
 var _server2 = _interopRequireDefault(_server);
 
@@ -362,15 +327,13 @@ var _passport = __webpack_require__(4);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _app = __webpack_require__(6);
+var _app = __webpack_require__(5);
 
 var _app2 = _interopRequireDefault(_app);
 
 __webpack_require__(3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var models = __webpack_require__(5);
 
 var router = _express2.default.Router();
 
@@ -400,7 +363,7 @@ router.get('/login', function (req, res) {
 
     res.render('login.ejs', {
         html: html,
-        message: req.flash('signupMessage')
+        message: req.flash('loginMessage')
     });
 });
 
@@ -416,44 +379,45 @@ router.get('/signup', function (req, res) {
         _react2.default.createElement(_app2.default, null)
     ));
     res.render('signup.ejs', {
-        html: html, message: req.flash('loginMessage')
+        html: html,
+        message: req.flash('loginMessage')
     });
 });
 
 exports.default = router;
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("connect-flash");
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports = require("cookie-parser");
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 module.exports = require("express-session");
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 module.exports = require("morgan");
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -484,6 +448,47 @@ module.exports = {
 };
 
 /***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {
+
+var fs = __webpack_require__(19);
+var path = __webpack_require__(21);
+var Sequelize = __webpack_require__(22);
+var basename = path.basename(module.filename);
+var env = process.env.NODE_ENV || 'development';
+var config = __webpack_require__(14)[env];
+var db = {};
+
+if (config.use_env_variable) {
+  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+} else {
+  var sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize.sync();
+}
+
+fs.readdirSync('./app/db/models').filter(function (file) {
+  return file.indexOf('.') !== 0 && file !== 'index.js' && file.slice(-3) === '.js';
+}).forEach(function (file) {
+  var model = sequelize['import'](path.join('./app/db/models', file));
+  db[model.name] = model;
+});
+
+Object.keys(db).forEach(function (modelName) {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(17)(module)))
+
+/***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -494,15 +499,15 @@ var _express = __webpack_require__(0);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _appRouter = __webpack_require__(8);
+var _appRouter = __webpack_require__(7);
 
 var _appRouter2 = _interopRequireDefault(_appRouter);
 
-var _authRouter = __webpack_require__(9);
+var _authRouter = __webpack_require__(8);
 
 var _authRouter2 = _interopRequireDefault(_authRouter);
 
-var _expressSession = __webpack_require__(13);
+var _expressSession = __webpack_require__(12);
 
 var _expressSession2 = _interopRequireDefault(_expressSession);
 
@@ -510,19 +515,19 @@ var _passport = __webpack_require__(4);
 
 var _passport2 = _interopRequireDefault(_passport);
 
-var _bodyParser = __webpack_require__(10);
+var _bodyParser = __webpack_require__(9);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _cookieParser = __webpack_require__(12);
+var _cookieParser = __webpack_require__(11);
 
 var _cookieParser2 = _interopRequireDefault(_cookieParser);
 
-var _morgan = __webpack_require__(14);
+var _morgan = __webpack_require__(13);
 
 var _morgan2 = _interopRequireDefault(_morgan);
 
-var _connectFlash = __webpack_require__(11);
+var _connectFlash = __webpack_require__(10);
 
 var _connectFlash2 = _interopRequireDefault(_connectFlash);
 
@@ -590,22 +595,28 @@ module.exports = function(module) {
 /* 18 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs");
+module.exports = require("bcrypt-nodejs");
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports) {
 
-module.exports = require("passport-local");
+module.exports = require("fs");
 
 /***/ }),
 /* 20 */
 /***/ (function(module, exports) {
 
-module.exports = require("path");
+module.exports = require("passport-local");
 
 /***/ }),
 /* 21 */
+/***/ (function(module, exports) {
+
+module.exports = require("path");
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = require("sequelize");

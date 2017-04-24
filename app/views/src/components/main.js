@@ -8,7 +8,6 @@ class Main extends Component {
             <div className="splash-container">
               <div className="splash">
                 <h1 className="rent-logo">Rent</h1>
-                <Login />
               </div>
             </div>
         );

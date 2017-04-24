@@ -23,9 +23,11 @@ class Login extends Component {
                             name="password"
                             placeholder="password"
                             required/></li>
-                        <li
-                          className="login-button">
-                            <input type="submit" value="Login"/></li>
+                        <li>
+                          <input
+                            className="login-button"
+                            type="submit"
+                            value="Login"/></li>
                     </ul>
                 </form>
             </div>
@@ -33,4 +35,4 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default Login;
