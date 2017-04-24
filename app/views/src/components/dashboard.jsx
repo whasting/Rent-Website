@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-
+import Breakdown from './breakdown.jsx';
+import Community from './community.jsx';
 
 class Dashboard extends Component {
     render() {
         return (
-                <div className="splash-container">
-                    <div className="splash">
-                        <h1 className="rent-logo">Rent</h1>
-                    </div>
+            <div className="dashboard">
+
+                <div className="dash-left">
+                    <Community/>
                 </div>
+                <div className="dash-right">
+                    <Breakdown/>
+                </div>
+            </div>
         );
     }
 }
