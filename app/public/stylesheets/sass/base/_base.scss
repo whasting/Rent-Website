@@ -9,33 +9,6 @@ html, body {
   width: 100%;
 }
 
-ul, li, button {
-  list-style: none;
-  text-decoration: none;
-  margin: 0;
-  padding: 0;
-  width: auto;
-}
-
-input:focus
-{
-	outline:0;
-}
-
-label {
-  margin: 0;
-}
-
-.navbar {
-  position: fixed;
-
-}
-
-.navbar a {
-  color: white;
-  text-decoration: none;
-  text-shadow: 1px 1px 0px black;
-}
 
 .splash-container {
   height: 100%;
