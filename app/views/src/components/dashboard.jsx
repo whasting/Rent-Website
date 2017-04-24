@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 
+
 class Dashboard extends Component {
-  constructor() {
-
-  }
-
-  render() {
-    return (
-      <div className="dashboard-container">
-        
-      </div>
-    );
-  }
+    render() {
+        return (
+                <div className="splash-container">
+                    <div className="splash">
+                        <h1 className="rent-logo">Rent</h1>
+                    </div>
+                </div>
+        );
+    }
 }
 
 export default Dashboard;
