@@ -1,4 +1,4 @@
-.login-container {
+.auth-container {
   width: 30%;
   display: flex;
   flex-direction: column;
@@ -8,12 +8,12 @@
   padding: 15px 25px;
 }
 
-.login-form {
+.auth-form {
   display: flex;
   flex-direction: column;
 }
 
-.login-input {
+.auth-input {
   width: auto;
   display: flex;
   flex-direction: column;
@@ -21,7 +21,7 @@
   align-items: flex-start;
 }
 
-.login-button {
+.auth-button {
   background-color: #5076ff;
   border: none;
   color: white;

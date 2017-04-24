@@ -10,11 +10,16 @@
 <body>
 <div class="splash-container">
     <div class="splash">
-        <div class="login-container">
+        <div class="auth-container">
 
-            <h1 class="login-header"><span class="fa fa-sign-in"></span> Login</h1>
+            <h1 class="auth-header"><span class="fa fa-sign-in"></span> Login</h1>
 
             <!-- show any messages that come back with authentication -->
+            <% if (message.length > 0) { %>
+            <div class="alert alert-danger"><%= message %></div>
+            <% } else { %>
+            <div class="alert alert-danger inactive"> </div>
+            <% } %>
 
             <!-- LOGIN FORM -->
             <form action="/login" method="post">
@@ -30,11 +35,6 @@
                 <button type="submit" class="login-button btn btn-warning btn-lg">Login</button>
             </form>
 
-            <% if (message.length > 0) { %>
-            <div class="alert alert-danger"><%= message %></div>
-            <% } else { %>
-            <div class="alert alert-danger inactive"> </div>
-            <% } %>
 
             <p>Need an account? <a href="/signup">Signup</a></p>
             <p>Or go <a href="/">home</a>.</p>

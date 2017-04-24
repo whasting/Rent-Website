@@ -1,3 +1,6 @@
 node_modules
 server.bundle.js
 .sass-cache
+*.css
+app/public/stylesheets/nav.css
+*.map
