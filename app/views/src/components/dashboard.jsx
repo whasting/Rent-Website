@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
+import Breakdown from './breakdown.jsx';
+import Community from './community.jsx';
 
 class Dashboard extends Component {
-  constructor() {
+    render() {
+        return (
+            <div className="dashboard">
 
-  }
-
-  render() {
-    return (
-      <div className="dashboard-container">
-        
-      </div>
-    );
-  }
+                <div className="dash-left">
+                    <Community/>
+                </div>
+                <div className="dash-right">
+                    <Breakdown/>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default Dashboard;

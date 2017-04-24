@@ -32,14 +32,14 @@ router.get('/', (req, res) => {
     );
 
     if (req.user) {
-      res.render('index.ejs', {
-        html: html,
-      });
+        res.render('index.ejs', {
+            html: html,
+        });
     } else {
-      res.render('login.ejs', {
-        html: html,
-        message: req.flash('loginMessage')
-      });
+        res.render('login.ejs', {
+            html: html,
+            message: req.flash('loginMessage')
+        });
     }
 
 });
