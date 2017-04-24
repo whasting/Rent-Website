@@ -3,15 +3,31 @@ import React, { Component } from 'react';
 class Login extends Component {
     render() {
         return (
-            <div className="col-md-10 col-md-offset-1 main">
+            <div className="login-container">
                 <form name="login" action="/login" method="post">
-                    <ul>
-                        <li><label>Email</label>
-                            <input type="email" name="usermail" placeholder="yourname@email.com" required/></li>
-                        <li><label>Password</label>
-                            <input type="password" name="password" placeholder="password" required/></li>
+                    <ul className="login-form">
+                        <li
+                          className="login-input">
+                          <label>Email</label>
+                            <input
+                              type="email"
+                              name="usermail"
+                              placeholder="yourname@email.com"
+                              required/>
+                        </li>
+                        <li
+                          className="login-input">
+                          <label>Password</label>
+                          <input
+                            type="password"
+                            name="password"
+                            placeholder="password"
+                            required/></li>
                         <li>
-                            <input type="submit" value="Login"/></li>
+                          <input
+                            className="login-button"
+                            type="submit"
+                            value="Login"/></li>
                     </ul>
                 </form>
             </div>
@@ -19,4 +35,4 @@ class Login extends Component {
     }
 }
 
-export default Login
+export default Login;

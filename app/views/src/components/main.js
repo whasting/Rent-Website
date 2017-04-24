@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
+import Login from './login.jsx';
+import Signup from './signup.jsx';
 
 class Main extends Component {
     render() {
         return(
-            <div className="col-md-10 col-md-offset-1 main">
-                <h1>HELLO</h1>
+            <div className="splash-container">
+              <div className="splash">
+                <h1 className="rent-logo">Rent</h1>
+              </div>
             </div>
-        )
+        );
     }
 }
 
