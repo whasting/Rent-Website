@@ -9,12 +9,7 @@ html, body {
   width: 100%;
 }
 
-.main{
-    position: relative;
-    margin-top: 5vh;
-}
-
-ul, li {
+ul, li, button {
   list-style: none;
   text-decoration: none;
   margin: 0;
@@ -65,4 +60,16 @@ label {
   text-shadow: 2px 2px 1px black;
   font-family: 'Courgette', cursive;
   font-size: 50px;
+}
+
+.logout-button {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  text-shadow: 1px 1px 0px black;
+}
+
+.logout-button:focus {
+  outline: none;
 }

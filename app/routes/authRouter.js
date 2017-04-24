@@ -56,4 +56,11 @@ router.get('/signup', function(req, res) {
     });
 });
 
+router.get('/logout', function(req, res){
+  console.log("HELLO");
+  req.session.destroy((err) => {
+    res.redirect('/');
+  });
+});
+
 export default router;

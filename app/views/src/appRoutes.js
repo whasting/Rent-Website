@@ -14,6 +14,12 @@ const App = () => (
         <div>
             <nav className="navbar">
                 <li><Link to="/">Home</Link></li>
+                <li>
+                  <form action="/logout" method="get">
+                    <button
+                      type="submit"
+                      className="logout-button">Logout</button>
+                  </form></li>
             </nav>
             <Route exact path="/" component={Main}/>
         </div>
