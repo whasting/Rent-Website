@@ -2,18 +2,26 @@
 const bcrypt = require('bcrypt-nodejs');
 
 module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('User', {
+    let User = sequelize.define('User', {
         username: {
+            unique: true,
+            type: DataTypes.STRING,
+        },
+        email: {
+            unique: true,
             type: DataTypes.STRING,
         },
         password: {
             type: DataTypes.STRING,
         },
+        isAdmin: {
+            type: DataTypes.BOOLEAN,
+        },
     }, {
         tableName: 'users',
         classMethods: {
             associate: function(models) {
-                // associations can be defined here
+                User.hasOne(models.Profile);
             },
         },
         instanceMethods: {
@@ -26,4 +34,5 @@ module.exports = function(sequelize, DataTypes) {
             },
         }
     });
+    return User;
 };

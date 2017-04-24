@@ -9,26 +9,27 @@ var config    = require(__dirname + '/../config.js')[env];
 var db        = {};
 
 if (config.use_env_variable) {
-  var sequelize = new Sequelize(process.env[config.use_env_variable]);
+    var sequelize = new Sequelize(process.env[config.use_env_variable]);
 } else {
-  var sequelize = new Sequelize(config.database, config.username, config.password, config);
-  sequelize.sync();
+    var sequelize = new Sequelize(config.database, config.username, config.password, config);
+    sequelize.sync();
 }
 
 fs
-  .readdirSync('./app/db/models')
-  .filter(function(file) {
-    return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.slice(-3) === '.js');
-  })
-  .forEach(function(file) {
-    var model = sequelize['import'](path.join('./app/db/models', file));
-    db[model.name] = model;
-  });
+    .readdirSync('./app/db/models')
+    .filter(function(file) {
+        return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.slice(-3) === '.js');
+    })
+    .forEach(function(file) {
+        var model = sequelize['import'](path.join('./app/db/models', file));
+        // var model = sequelize['import'](path.join('../models', file)); // Use this one for tests
+        db[model.name] = model;
+    });
 
 Object.keys(db).forEach(function(modelName) {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+    if (db[modelName].associate) {
+        db[modelName].associate(db);
+    }
 });
 
 db.sequelize = sequelize;
