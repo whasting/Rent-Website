@@ -42,13 +42,13 @@ label {
   width: 100%;
   background-size: cover;
   background-position: top;
-  background-image: url("http://kingofwallpapers.com/buildings-wallpaper/buildings-wallpaper-009.jpg");
+  background-image: url("https://res.cloudinary.com/whasting/image/upload/v1493001230/wallup-399846_kgg899.jpg");
 }
 
 .splash {
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,4 +72,48 @@ label {
 
 .logout-button:focus {
   outline: none;
+}
+
+.login-container {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 2px;
+  background-color: rgba(255,255,255, 0.97);
+  padding: 5px 15px;
+}
+
+.login-header {
+  text-align: center;
+}
+
+button.login-button {
+  outline: none;
+  width: 50%;
+  padding: 3px;
+}
+
+button.login-button:focus {
+  outline: none;
+}
+
+div.alert.alert-danger {
+  margin: 8px 0;
+  height: 25px;
+  padding: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+div.alert.alert-danger.inactive {
+  padding: 0;
+  height: 25px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: transparent;
+  border: none;
 }

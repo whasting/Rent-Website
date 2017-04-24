@@ -4,19 +4,17 @@
 <head>
     <title>Rent</title>
     <link rel="stylesheet" href="../stylesheets/main.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 </head>
 <body>
   <div class="splash-container">
     <div class="splash">
+      <div class="login-container">
 
-      <h1><span class="fa fa-sign-in"></span> Login</h1>
+      <h1 class="login-header"><span class="fa fa-sign-in"></span> Login</h1>
 
       <!-- show any messages that come back with authentication -->
-      <% if (message.length > 0) { %>
-          <div class="alert alert-danger"><%= message %></div>
-      <% } %>
 
       <!-- LOGIN FORM -->
       <form action="/login" method="post">
@@ -29,14 +27,19 @@
               <input type="password" class="form-control" name="password">
           </div>
 
-          <button type="submit" class="btn btn-warning btn-lg">Login</button>
+          <button type="submit" class="login-button btn btn-warning btn-lg">Login</button>
       </form>
 
-      <hr>
+      <% if (message.length > 0) { %>
+          <div class="alert alert-danger"><%= message %></div>
+      <% } else { %>
+            <div class="alert alert-danger inactive"> </div>
+      <% } %>
 
       <p>Need an account? <a href="/signup">Signup</a></p>
       <p>Or go <a href="/">home</a>.</p>
 
+      </div>
     </div>
 
   </div>
