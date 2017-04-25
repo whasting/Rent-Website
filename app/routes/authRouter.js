@@ -3,63 +3,17 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter} from 'react-router-dom';
 import passport from 'passport';
-import App from './app';
+import auth from './core/auth';
 import '../../config/passport';
 
 
 let router = express.Router();
 
-router.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash : true,
-}));
+router.post('/login', auth.login);
+router.post('/signup', auth.signup);
 
-router.post('/signup', passport.authenticate('local-signup', {
-    successRedirect : '/',
-    failureRedirect : '/signup',
-    failureFlash : true,
-}));
-
-router.get('/login', (req, res) => {
-    const context = {};
-
-    const html = ReactDOMServer.renderToString(
-        <StaticRouter
-            location={req.url}
-            context={context}
-        >
-            <App/>
-        </StaticRouter>
-    );
-
-    res.render('login.ejs', {
-        html: html,
-        message: req.flash('loginMessage')
-    });
-});
-
-router.get('/signup', function(req, res) {
-    let context = {};
-
-    const html = ReactDOMServer.renderToString(
-        <StaticRouter
-            location={req.url}
-            context={context}
-        >
-            <App/>
-        </StaticRouter>
-    );
-    res.render('signup.ejs', {
-        html: html,
-        message: req.flash('loginMessage')
-    });
-});
-
-router.get('/logout', function(req, res){
-    req.session.destroy(() => {
-        res.redirect('/login');
-    });
-});
+router.get('/login', auth.renderLogin);
+router.get('/signup', auth.renderSignup);
+router.get('/logout', auth.logout);
 
 export default router;
