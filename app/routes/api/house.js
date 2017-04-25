@@ -1,8 +1,8 @@
 export default {
     getAll: function() {
-        res.json('');
+        // STUB
     },
     get: function(req, res) {
-        res.json('');
+        // STUB
     }
 };

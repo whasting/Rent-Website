@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { StaticRouter} from 'react-router-dom';
 import passport from 'passport';
-import auth from './core/auth';
+import auth from './api/auth';
 import '../../config/passport';
 
 
