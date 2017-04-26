@@ -2,7 +2,7 @@
 
 Hooray for rent automation! Rent Website is a full-stack application written purely in JavaScript using React/Redux for the frontend and Node.js for the backend.
 
-This project draws inspiration from a website written by friend and housemate Alex Rowe in 2014. We lived in a house with 14 people and rent/utilities was a chore.
+This project draws inspiration from a website written by friend and housemate [Alex Rowe](https://github.com/aprowe) in 2014. We lived in a house with 14 people and rent/utilities was a chore.
 
 ### MVPs
     1. User Authentication
