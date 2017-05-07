@@ -1,8 +1,9 @@
 const models = require('./app/db/models');
+const bcrypt = require('bcrypt-nodejs');
 
-// Superuser credentials
+// Dev superuser credentials
 const EMAIL = 'root@root.com';
-const PASSWORD = 'root';
+const PASSWORD = bcrypt.hashSync('root', bcrypt.genSaltSync(8), null);
 
 module.exports.createSuperUser = function() {
     models.User
