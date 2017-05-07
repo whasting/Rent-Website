@@ -21,8 +21,10 @@ fs
         return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.slice(-3) === '.js');
     })
     .forEach(function(file) {
-        var model = sequelize['import'](path.join('./app/db/models', file));
+        var model = sequelize['import'](path.join('./', file));
         // var model = sequelize['import'](path.join('../models', file)); // Use this one for tests
+        // var model = sequelize['import'](path.join('./app/db/models', file)); 
+
         db[model.name] = model;
     });
 

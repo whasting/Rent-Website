@@ -39,7 +39,8 @@ module.exports = function(passport) {
                 models.User
                     .create({
                         email: email,
-                        password: password
+                        password: password,
+                        isAdmin: false,
                     })
                     .then((user) => {
                         return done(null, user);

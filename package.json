@@ -8,7 +8,8 @@
     "debug": "./node_modules/.bin/node-debug server.bundle.js",
     "migrate": "node_modules/.bin/sequelize db:migrate --config \"./app/db/config.js\"",
     "test": "./node_modules/mocha/bin/mocha --watch",
-    "sass": "sass --watch app/public/stylesheets/sass/main.scss:app/public/stylesheets/app.css"
+    "sass": "sass --watch app/public/stylesheets/sass/main.scss:app/public/stylesheets/app.css",
+    "superuser": "node -e 'require(\"./utils.js\").createSuperUser()'"
   },
   "repository": {
     "type": "git",
