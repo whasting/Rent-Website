@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
         tableName: 'houses',
         classMethods: {
             associate: function(models) {
-                House.hasMany(models.Profile);
+                House.hasMany(models.User);
             },
         },
         instanceMethods: {

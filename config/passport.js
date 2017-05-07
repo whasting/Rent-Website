@@ -23,25 +23,24 @@ module.exports = function(passport) {
     });
 
     passport.use('local-signup', new LocalStrategy({
-        usernameField : 'username',
+        usernameField : 'email',
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
-    }, function(req, username, password, done) {
-        models.User.findOne({where: { 'username' :  username }}).then((user, err) => {
+    }, function(req, email, password, done) {
+        models.User.findOne({where: { 'email' :  email }}).then((user, err) => {
             // if there are any errors, return the error
             if (err)
                 return done(err);
 
             if (user) {
-                return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
             } else {
-                // let password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+                let password = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
                 models.User
-                    .build({
-                        username: username,
+                    .create({
+                        email: email,
                         password: password
                     })
-                    .save()
                     .then((user) => {
                         return done(null, user);
                     })
@@ -56,12 +55,12 @@ module.exports = function(passport) {
     }));
 
     passport.use('local-login', new LocalStrategy({
-            usernameField : 'username',
+            usernameField : 'email',
             passwordField : 'password',
             passReqToCallback : true // allows us to pass back the entire request to the callback
         },
-        function(req, username, password, done) { // callback with email and password from our form
-            models.User.findOne({where: {'username':  username}}).then((user) => {
+        function(req, email, password, done) { // callback with email and password from our form
+            models.User.findOne({where: {'email':  email}}).then((user) => {
 
                 if (!user)
                     return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
@@ -77,5 +76,4 @@ module.exports = function(passport) {
                 });
 
         }));
-
 };

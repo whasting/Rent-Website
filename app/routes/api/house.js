@@ -1,4 +1,7 @@
 export default {
+    create: function() {
+        // STUB
+    },
     getAll: function() {
         // STUB
     },
